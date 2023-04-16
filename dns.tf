@@ -1,6 +1,3 @@
-provider "azurerm" {
-  features {}
-}
 
 resource "azurerm_resource_group" "dns" {
   name     = "${var.group}-dns"
