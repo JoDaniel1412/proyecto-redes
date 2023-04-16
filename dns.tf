@@ -1,4 +1,4 @@
-
+# Main resource group for the DNS resources
 resource "azurerm_resource_group" "dns" {
   name     = "${var.group}-dns"
   location = "eastus"

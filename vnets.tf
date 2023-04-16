@@ -1,14 +1,13 @@
-
-# Main resource group
+# Main resource group for the network resources
 resource "azurerm_resource_group" "vnets" {
   name     = "${var.group}-vnets"
   location = "eastus"
 }
 
 # Virtual network listening on 10.0.0.0/8, with three subnetworks
-# - subnet1 (/22)
-# - subnet2 (/22)
-# - subnet3 (/22)
+# - subnet1 (10.0.0.0/22)
+# - subnet2 (10.0.4.0/22)
+# - subnet3 (10.0.8.0/22)
 resource "azurerm_virtual_network" "vnet_g" {
   name                = "${var.group}-vnet"
   location            = azurerm_resource_group.vnets.location
@@ -89,7 +88,14 @@ resource "azurerm_network_security_group" "nsg" {
   }
 }
 
-# Network interface to connect the nsg with the vsubnets
+# Adds the security rules to the subnetworks
+resource "azurerm_subnet_network_security_group_association" "subnet-nsg" {
+  count                     = 3
+  subnet_id                 = element(azurerm_virtual_network.vnet_g.subnet.*.id, count.index)
+  network_security_group_id = azurerm_network_security_group.nsg.id
+}
+
+# Network interface to enable communication between resources in the VN
 resource "azurerm_network_interface" "neti" {
   count               = 3
   name                = "${var.group}-nic-${count.index}"
@@ -104,22 +110,16 @@ resource "azurerm_network_interface" "neti" {
   }
 }
 
-resource "azurerm_subnet_network_security_group_association" "subnet-nsg" {
-  count                     = 3
-  subnet_id                 = element(azurerm_virtual_network.vnet_g.subnet.*.id, count.index)
-  network_security_group_id = azurerm_network_security_group.nsg.id
-}
-
-# Virtiual Machine for each subnet
+# Virtual Machine for each subnet
 resource "azurerm_linux_virtual_machine" "vm" {
   count               = 3
   name                = "${var.group}-vm-${count.index}"
   location            = azurerm_resource_group.vnets.location
   resource_group_name = azurerm_resource_group.vnets.name
-  size                = "Standard_DS1_v2"
+  size                = "Standard_B1s"
 
-  admin_username                  = "atlas"
-  admin_password                  = "Admin1234"
+  admin_username                  = var.vm_cred.user
+  admin_password                  = var.vm_cred.pass
   disable_password_authentication = "false"
 
   network_interface_ids = [
@@ -132,6 +132,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
     storage_account_type = "Standard_LRS"
   }
 
+  # OS in wich the VM runs
   source_image_reference {
     publisher = "Canonical"
     offer     = "UbuntuServer"
