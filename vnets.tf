@@ -34,12 +34,12 @@ resource "azurerm_subnet_network_security_group_association" "subnet-nsg" {
 # Network interface to enable communication between resources in the VN
 resource "azurerm_network_interface" "neti" {
   count               = 3
-  name                = "${var.group}-nic-${count.index}"
+  name                = "${var.group}-ni${count.index + 1}"
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
 
   ip_configuration {
-    name                          = "internal"
+    name                          = "ip-config${count.index + 1}"
     subnet_id                     = element(azurerm_virtual_network.vnet.subnet.*.id, count.index)
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = null

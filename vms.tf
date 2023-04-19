@@ -1,7 +1,8 @@
 
 # Virtual Machine for the dns
 resource "azurerm_virtual_machine" "dns-vm" {
-  name                = "${var.group}-vm-dns"
+  name = "${var.group}-vm-dns"
+  //availability_set_id = azurerm_availability_set.avset.id
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   vm_size             = "Standard_B1s"
@@ -40,8 +41,9 @@ resource "azurerm_virtual_machine" "dns-vm" {
 
 # Virtual Machine for the Apche servers
 resource "azurerm_virtual_machine" "apache-vm" {
-  count               = 2
-  name                = "${var.group}-vm-apache${count.index + 1}"
+  count = 2
+  name  = "${var.group}-vm-apache${count.index + 1}"
+  //availability_set_id = azurerm_availability_set.avset.id
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   vm_size             = "Standard_B1s"
