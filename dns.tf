@@ -20,7 +20,7 @@ resource "azurerm_dns_zone" "google" {
 }
 
 resource "azurerm_dns_a_record" "asimov-record" {
-  name                = ""
+  name                = "@"
   resource_group_name = azurerm_resource_group.main.name
   zone_name           = azurerm_dns_zone.asimov.name
   ttl                 = var.dns_ttl
@@ -28,7 +28,7 @@ resource "azurerm_dns_a_record" "asimov-record" {
 }
 
 resource "azurerm_dns_a_record" "dostoievski-record" {
-  name                = ""
+  name                = "@"
   resource_group_name = azurerm_resource_group.main.name
   zone_name           = azurerm_dns_zone.dostoievski.name
   ttl                 = var.dns_ttl
@@ -36,7 +36,7 @@ resource "azurerm_dns_a_record" "dostoievski-record" {
 }
 
 resource "azurerm_dns_a_record" "google-record" {
-  name                = ""
+  name                = "@"
   resource_group_name = azurerm_resource_group.main.name
   zone_name           = azurerm_dns_zone.dostoievski.name
   ttl                 = var.dns_ttl
