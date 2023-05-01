@@ -38,6 +38,6 @@ resource "azurerm_virtual_machine" "web-vm" {
   os_profile {
     computer_name  = var.group
     admin_username = var.vm_cred.user
-    custom_data    = count.index < 2 ? filebase64("./web/cloud-init.txt") : null
+    custom_data    = count.index < 2 ? filebase64("./web/cloud-init${count.index + 1}.txt") : null
   }
 }

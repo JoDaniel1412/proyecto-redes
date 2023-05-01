@@ -36,7 +36,7 @@ resource "azurerm_lb_rule" "rule" {
 }
 
 resource "azurerm_network_interface_backend_address_pool_association" "backendpool" {
-  count                   = 3
+  count                   = 2
   network_interface_id    = element(azurerm_network_interface.neti.*.id, count.index)
   ip_configuration_name   = "ip-config${count.index + 1}"
   backend_address_pool_id = azurerm_lb_backend_address_pool.pool.id

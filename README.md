@@ -81,6 +81,12 @@ Use the next command to check if the DNS is routing the IPs correctly
 nslookup [domain-name] [name-server]
 ```
 
+Use the next command to check to which DNS is the local machine routing to
+
+```
+ipconfig /all | findstr "DNS\ Servers"
+```
+
 ## Source
 
-[MS Doc](https://learn.microsoft.com/en-us/azure/dns/dns-get-started-terraform?tabs=azure-cli)
+[Quickstart: Create an Azure DNS zone and record using Terraform](https://learn.microsoft.com/en-us/azure/dns/dns-get-started-terraform?tabs=azure-cli)

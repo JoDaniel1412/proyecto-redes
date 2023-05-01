@@ -10,6 +10,10 @@ destroy:
 	terraform apply main.destroy.tfplan
 
 clear: 
-	rm ./terraform.tfstate
-	rm ./terraform.lock.hcl
-	rm ./main.tfplan
+	rm -rf ./.terraform
+	rm -f ./terraform.tfstate
+	rm -f ./terraform.tfstate.backup
+	rm -f ./.terraform.tfstate.lock.info
+	rm -f ./.terraform.lock.hcl
+	rm -f ./main.tfplan
+	rm -f ./main.destroy.tfplan

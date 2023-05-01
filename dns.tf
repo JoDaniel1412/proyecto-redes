@@ -20,25 +20,25 @@ resource "azurerm_dns_zone" "google" {
 }
 
 resource "azurerm_dns_a_record" "asimov-record" {
-  name                = "www"
+  name                = ""
   resource_group_name = azurerm_resource_group.main.name
   zone_name           = azurerm_dns_zone.asimov.name
   ttl                 = var.dns_ttl
-  records             = [azurerm_public_ip.pip.ip_address]
+  target_resource_id  = azurerm_public_ip.pip.id
 }
 
 resource "azurerm_dns_a_record" "dostoievski-record" {
-  name                = "www"
+  name                = ""
   resource_group_name = azurerm_resource_group.main.name
   zone_name           = azurerm_dns_zone.dostoievski.name
   ttl                 = var.dns_ttl
-  records             = [azurerm_public_ip.pip.ip_address]
+  target_resource_id  = azurerm_public_ip.pip.id
 }
 
 resource "azurerm_dns_a_record" "google-record" {
-  name                = "www"
+  name                = ""
   resource_group_name = azurerm_resource_group.main.name
   zone_name           = azurerm_dns_zone.dostoievski.name
   ttl                 = var.dns_ttl
-  records             = [azurerm_public_ip.pip.ip_address]
+  target_resource_id  = azurerm_public_ip.pip.id
 }
