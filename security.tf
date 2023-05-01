@@ -56,3 +56,10 @@ resource "azurerm_network_security_group" "nsg" {
     destination_address_prefix = "*"
   }
 }
+
+# Adds the security rules to the subnetworks
+resource "azurerm_subnet_network_security_group_association" "subnet-nsg" {
+  count                     = 3
+  subnet_id                 = element(azurerm_virtual_network.vnet.subnet.*.id, count.index)
+  network_security_group_id = azurerm_network_security_group.nsg.id
+}

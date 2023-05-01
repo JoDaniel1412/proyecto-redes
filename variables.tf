@@ -16,7 +16,7 @@ variable "vm_cred" {
   description = "Credentials for the VMs"
   type        = map(any)
   default = {
-    "user" = "atlas"
+    "user" = "azureuser"
     "pass" = "Admin1234"
   }
 }

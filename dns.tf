@@ -1,38 +1,44 @@
+variable "dns_ttl" {
+  type        = number
+  default     = 3600
+  description = "Time To Live (TTL) of the DNS record (in seconds)."
+}
+
 resource "azurerm_dns_zone" "asimov" {
-  name                = "asimov.io"
+  name                = "www.asimov.io"
   resource_group_name = azurerm_resource_group.main.name
 }
 
 resource "azurerm_dns_zone" "dostoievski" {
-  name                = "dostoievski.io"
+  name                = "www.dostoievski.io"
   resource_group_name = azurerm_resource_group.main.name
 }
 
-# resource "azurerm_dns_zone" "google" {
-#   name                = "google.com"
-#   resource_group_name = azurerm_resource_group.main.name
-# }
+resource "azurerm_dns_zone" "google" {
+  name                = "www.google.com"
+  resource_group_name = azurerm_resource_group.main.name
+}
 
-resource "azurerm_dns_a_record" "asimov-site" {
-  name                = "asimov-site"
+resource "azurerm_dns_a_record" "asimov-record" {
+  name                = "www"
+  resource_group_name = azurerm_resource_group.main.name
   zone_name           = azurerm_dns_zone.asimov.name
-  resource_group_name = azurerm_resource_group.main.name
-  ttl                 = 300
-  records             = ["8.8.8.8", "8.8.8.9"]
+  ttl                 = var.dns_ttl
+  records             = [azurerm_public_ip.pip.ip_address]
 }
 
-resource "azurerm_dns_a_record" "dostoievski-site" {
-  name                = "dostoievski-site"
+resource "azurerm_dns_a_record" "dostoievski-record" {
+  name                = "www"
+  resource_group_name = azurerm_resource_group.main.name
   zone_name           = azurerm_dns_zone.dostoievski.name
-  resource_group_name = azurerm_resource_group.main.name
-  ttl                 = 300
-  records             = ["8.8.8.8", "8.8.8.9"]
+  ttl                 = var.dns_ttl
+  records             = [azurerm_public_ip.pip.ip_address]
 }
 
-# resource "azurerm_dns_a_record" "google-site" {
-#   name                = "google-site"
-#   zone_name           = azurerm_dns_zone.google.name
-#   resource_group_name = azurerm_resource_group.main.name
-#   ttl                 = 300
-#   records             = ["8.8.8.8", "8.8.8.9"]
-# }
+resource "azurerm_dns_a_record" "google-record" {
+  name                = "www"
+  resource_group_name = azurerm_resource_group.main.name
+  zone_name           = azurerm_dns_zone.dostoievski.name
+  ttl                 = var.dns_ttl
+  records             = [azurerm_public_ip.pip.ip_address]
+}

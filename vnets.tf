@@ -9,32 +9,25 @@ resource "azurerm_virtual_network" "vnet" {
   address_space       = ["10.0.0.0/8"]
 
   subnet {
-    name           = "subnet1"
+    name           = "${var.group}-subnet1"
     address_prefix = "10.0.0.0/22"
   }
 
   subnet {
-    name           = "subnet2"
+    name           = "${var.group}-subnet2"
     address_prefix = "10.0.4.0/22"
   }
 
   subnet {
-    name           = "subnet3"
+    name           = "${var.group}-subnet3"
     address_prefix = "10.0.8.0/22"
   }
-}
-
-# Adds the security rules to the subnetworks
-resource "azurerm_subnet_network_security_group_association" "subnet-nsg" {
-  count                     = 3
-  subnet_id                 = element(azurerm_virtual_network.vnet.subnet.*.id, count.index)
-  network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
 # Network interface to enable communication between resources in the VN
 resource "azurerm_network_interface" "neti" {
   count               = 3
-  name                = "${var.group}-ni${count.index + 1}"
+  name                = "${var.group}-neti${count.index + 1}"
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
 
@@ -42,6 +35,6 @@ resource "azurerm_network_interface" "neti" {
     name                          = "ip-config${count.index + 1}"
     subnet_id                     = element(azurerm_virtual_network.vnet.subnet.*.id, count.index)
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = null
+    public_ip_address_id          = count.index < 2 ? null : azurerm_public_ip.vm-pip.id
   }
 }
