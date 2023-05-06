@@ -21,6 +21,30 @@ resource "azurerm_network_security_group" "nsg" {
   }
 
   security_rule {
+  name                       = "proxy-in"
+  priority                   = 99
+  direction                  = "Inbound"
+  access                     = "Allow"
+  protocol                   = "Tcp"
+  source_port_range          = "*"
+  destination_port_range     = "3128"
+  source_address_prefix      = "*"
+  destination_address_prefix = "*"
+}
+
+security_rule {
+  name                       = "proxy-out"
+  priority                   = 99
+  direction                  = "Outbound"
+  access                     = "Allow"
+  protocol                   = "Tcp"
+  source_port_range          = "3128"
+  destination_port_range     = "*"
+  source_address_prefix      = "*"
+  destination_address_prefix = "*"
+}
+
+  security_rule {
     name                       = "https-in"
     priority                   = 101
     direction                  = "Inbound"

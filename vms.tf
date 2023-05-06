@@ -40,4 +40,26 @@ resource "azurerm_virtual_machine" "web-vm" {
     admin_username = var.vm_cred.user
     custom_data    = count.index < 2 ? filebase64("./web/cloud-init${count.index + 1}.txt") : null
   }
+
+  provisioner "remote-exec" {
+    inline = count.index < 2 ? [
+      "chmod +x /home/azureuser/",
+      "cd /home/azureuser/",
+      "wget https://raw.githubusercontent.com/JocxanS7/Redes/master/comandos.sh",
+      "sed -i 's/\"IP_PUBLIC_MAQUINE_VIRTUAL\"/\"${azurerm_public_ip.vm-pip.ip_address}\"/g' comandos.sh",
+      "sudo chmod +x /home/azureuser/comandos.sh",
+      "bash /home/azureuser/comandos.sh"
+      
+
+      
+    ] : null
+    connection { 
+      type        = count.index < 2 ? "ssh" : null
+      host        = count.index < 2 ? "${azurerm_public_ip.vm-pip.ip_address}" : null
+      user        = count.index < 2 ? var.vm_cred.user : null
+      private_key = count.index < 2 ? file("./ssh/id_rsa") : null
+    }
+  }
 }
+
+
