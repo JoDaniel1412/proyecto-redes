@@ -17,7 +17,7 @@ az login
 Use in case there is more than one subscription use the next command to set it up
 
 ```bash
-az account set --subscription "35akss-subscription-id"
+az account set --subscription "cec75a14-921a-4051-a74d-9b3650c17559"
 ```
 
 ## Run with Make
