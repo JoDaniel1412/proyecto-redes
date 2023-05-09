@@ -10,7 +10,7 @@ resource "azurerm_network_security_group" "nsg" {
 
   security_rule {
     name                       = "http-in"
-    priority                   = 100
+    priority                   = 103
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
@@ -22,7 +22,7 @@ resource "azurerm_network_security_group" "nsg" {
 
   security_rule {
   name                       = "proxy-in"
-  priority                   = 99
+  priority                   = 100
   direction                  = "Inbound"
   access                     = "Allow"
   protocol                   = "Tcp"
@@ -34,7 +34,7 @@ resource "azurerm_network_security_group" "nsg" {
 
 security_rule {
   name                       = "proxy-out"
-  priority                   = 99
+  priority                   = 100
   direction                  = "Outbound"
   access                     = "Allow"
   protocol                   = "Tcp"
@@ -70,7 +70,7 @@ security_rule {
 
   security_rule {
     name                       = "any-out"
-    priority                   = 100
+    priority                   = 103
     direction                  = "Outbound"
     access                     = "Allow"
     protocol                   = "*"
