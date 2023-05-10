@@ -89,4 +89,6 @@ ipconfig /all | findstr "DNS\ Servers"
 
 ## Source
 
-[Quickstart: Create an Azure DNS zone and record using Terraform](https://learn.microsoft.com/en-us/azure/dns/dns-get-started-terraform?tabs=azure-cli)
+- [Quickstart: Create an Azure DNS zone and record using Terraform](https://learn.microsoft.com/en-us/azure/dns/dns-get-started-terraform?tabs=azure-cli)
+
+- [Exercise - Create alias records for Azure DNS](https://learn.microsoft.com/en-us/training/modules/host-domain-azure-dns/6-exercise-create-alias-records)
