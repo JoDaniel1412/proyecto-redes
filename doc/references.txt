@@ -2,3 +2,6 @@ https://developer.hashicorp.com/terraform/tutorials/azure-get-started/azure-buil
 https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-overview
 https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet
 https://medium.com/@jorge.gongora2610/how-to-set-up-an-apache-web-server-on-azure-using-terraform-f7498daa9d66
+https://stackoverflow.com/questions/9689336/how-to-install-chef-solo
+https://leopard.in.ua/2013/01/04/chef-solo-getting-started-part-1#.ZFovlHbMJhE
+https://www.devopsschool.com/blog/chef-solo/
