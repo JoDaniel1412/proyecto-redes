@@ -47,6 +47,7 @@ resource "azurerm_virtual_machine" "web-vm" {
       "cd /home/azureuser/",
       "wget https://raw.githubusercontent.com/JocxanS7/Redes/master/comandos.sh",
       "sed -i 's/\"IP_PUBLIC_MAQUINE_VIRTUAL\"/\"${azurerm_public_ip.vm-pip.ip_address}\"/g' comandos.sh",
+      "sed -i 's/\"IP_PUBLIC_MAQUINE_VIRTUAL:3128\"/\"${azurerm_public_ip.vm-pip.ip_address}:3128\"/g' comandos.sh",
       "sudo chmod +x /home/azureuser/comandos.sh",
       "bash /home/azureuser/comandos.sh"
       
