@@ -130,7 +130,9 @@ sudo chef-solo -c solo.rb -j node.json --chef-license accept
 sudo iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE
 
 
-# ======== Comandos Proxy Reverso ======== 
+# ======== Comandos Proxy Reverso NGINX ======== 
+
+ssh -i id_rsa azureuser@20.127.133.108
 
 # Install Chef Client
 
@@ -189,13 +191,82 @@ echo '{
     },
     "proxies": {
       "server1": {
-        "url": "http://<ip_de_server1>:80"
+        "url": "http://10.0.0.4:22"
       },
       "server2": {
-        "url": "http://<ip_de_server2>:80"
+        "url": "http://10.0.4.4:22"
       }
     }
   }
+}' > node.json
+
+# Creates a solo.rb
+
+echo 'current_dir = File.expand_path(File.dirname(__FILE__))
+file_cahe_path "#{current_dir}"
+cookbook_path  "#{current_dir}/cookbooks"
+role_path "#{current_dir}/roles"
+data_bag_path "#{current_dir}/data_bags" ' > solo.rb
+
+# Run Chef Solo
+
+sudo chef-solo -c solo.rb -j node.json --chef-license accept
+
+
+# ======== Comandos Proxy Reverso APACHE ======== 
+
+ssh -i id_rsa azureuser@10.0.0.4
+ssh -i id_rsa azureuser@10.0.4.4
+
+# Install Chef Client
+
+wget https://packages.chef.io/files/stable/chef-workstation/21.10.640/ubuntu/20.04/chef-workstation_21.10.640-1_amd64.deb
+yes | sudo dpkg -i chef-workstation_21.10.640-1_amd64.deb
+chef generate repo chef-repo --chef-license accept
+
+# Download Cookbooks from Chef Supermarket
+
+cd chef-repo
+cd cookbooks
+
+knife supermarket download apache
+tar -xvvzf apache-0.0.5.tar.gz
+
+# Edit the Default Recipe
+
+cd apache
+
+vi default.rb
+#
+apache_fastcgi 'myserver' do 
+ action 'install'
+ socket '/var/run/fast-cgi-server/socket'
+ server_name 'host.myserver.com'
+end
+#
+
+# Creates a node.json
+
+cd ..
+cd ..
+cd ..
+
+echo '{
+  "apache": {
+    "default_site_enabled": false,
+    "server_admin": "admin@example.com",
+    "listen_ports": [
+      "80",
+      "443"
+    ]
+  },
+  "run_list": [
+    "recipe[apache::default]",
+    "recipe[apache::mod_ssl]",
+    "recipe[apache::mod_rewrite]",
+    "recipe[apache::mod_headers]",
+    "recipe[apache::mod_proxy]"
+  ]
 }' > node.json
 
 # Creates a solo.rb
