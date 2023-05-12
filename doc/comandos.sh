@@ -261,11 +261,7 @@ echo '{
     ]
   },
   "run_list": [
-    "recipe[apache::default]",
-    "recipe[apache::mod_ssl]",
-    "recipe[apache::mod_rewrite]",
-    "recipe[apache::mod_headers]",
-    "recipe[apache::mod_proxy]"
+    "recipe[apache::default]"
   ]
 }' > node.json
 
