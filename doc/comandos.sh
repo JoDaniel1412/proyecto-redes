@@ -1,7 +1,14 @@
+# ======== Comandos VPN y Squid ======== 
+
+# Install Chef Client
+
 wget https://packages.chef.io/files/stable/chef-workstation/21.10.640/ubuntu/20.04/chef-workstation_21.10.640-1_amd64.deb
 yes | sudo dpkg -i chef-workstation_21.10.640-1_amd64.deb
 chef generate repo chef-repo --chef-license accept
 cd chef-repo
+
+# Download Cookbooks from Chef Supermarket
+
 cd cookbooks
 knife supermarket download openvpn 7.0.13 -y
 tar -xvvzf openvpn-7.0.13.tar.gz
@@ -9,6 +16,9 @@ knife supermarket download yum-epel 5.0.0 -y
 tar -xvvzf yum-epel-5.0.0.tar.gz
 knife supermarket download squid 4.4.5 -y
 tar -xvvzf squid-4.4.5.tar.gz
+
+# Create the Data Bags needed for the Cookbooks
+
 cd ..
 cd data_bags
 mkdir users
@@ -65,6 +75,9 @@ echo '{
       }
     ]
   }' > squid_urls.json
+
+# Creates a node.json
+
 cd ..
 cd ..
 echo '{
@@ -101,11 +114,98 @@ echo '{
     }
 
 }' > node.json
+
+# Creates a solo.rb
+
 cd chef-repo
 echo 'current_dir = File.expand_path(File.dirname(__FILE__))
 file_cahe_path "#{current_dir}"
 cookbook_path  "#{current_dir}/cookbooks"
 role_path "#{current_dir}/roles"
 data_bag_path "#{current_dir}/data_bags" ' > solo.rb
+
+# Run Chef Solo
+
 sudo chef-solo -c solo.rb -j node.json --chef-license accept
 sudo iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE
+
+
+# ======== Comandos Proxy Reverso ======== 
+
+# Install Chef Client
+
+wget https://packages.chef.io/files/stable/chef-workstation/21.10.640/ubuntu/20.04/chef-workstation_21.10.640-1_amd64.deb
+yes | sudo dpkg -i chef-workstation_21.10.640-1_amd64.deb
+chef generate repo chef-repo --chef-license accept
+
+# Download Cookbooks from Chef Supermarket
+
+cd chef-repo
+cd cookbooks
+
+knife supermarket download nginx
+tar -xvvzf nginx-12.2.0.tar.gz 
+
+# Creates a Default Recipe to use the Cookbook Resources
+
+cd nginx
+
+mkdir recipes
+cd recipes
+
+echo 'nginx_install "default"
+nginx_config "default"
+
+nginx_service "default" do
+  action [:start, :enable]
+end
+
+nginx_site "default" do
+  template "site-template.erb"
+end
+' > default.rb
+
+# Creates a node.json
+
+cd ..
+cd ..
+cd ..
+
+echo '{
+  "run_list": [
+    "recipe[nginx::default]"
+  ],
+  "nginx": {
+    "default_site_enabled": false,
+    "sites": {
+      "server1": {
+        "server_name": "server1",
+        "document_root": "/var/www/server1"
+      },
+      "server2": {
+        "server_name": "server2",
+        "document_root": "/var/www/server2"
+      }
+    },
+    "proxies": {
+      "server1": {
+        "url": "http://<ip_de_server1>:80"
+      },
+      "server2": {
+        "url": "http://<ip_de_server2>:80"
+      }
+    }
+  }
+}' > node.json
+
+# Creates a solo.rb
+
+echo 'current_dir = File.expand_path(File.dirname(__FILE__))
+file_cahe_path "#{current_dir}"
+cookbook_path  "#{current_dir}/cookbooks"
+role_path "#{current_dir}/roles"
+data_bag_path "#{current_dir}/data_bags" ' > solo.rb
+
+# Run Chef Solo
+
+sudo chef-solo -c solo.rb -j node.json --chef-license accept
