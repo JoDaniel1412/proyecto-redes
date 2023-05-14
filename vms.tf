@@ -47,20 +47,21 @@ resource "azurerm_virtual_machine" "web-vm" {
       "cd /home/azureuser/",
       "wget https://raw.githubusercontent.com/JocxanS7/Redes/master/comandos.sh",
       "sed -i 's/\"IP_PUBLIC_MAQUINE_VIRTUAL\"/\"${azurerm_public_ip.vm-pip.ip_address}\"/g' comandos.sh",
-      "sed -i 's/\"IP_PUBLIC_MAQUINE_VIRTUAL:3128\"/\"${azurerm_public_ip.vm-pip.ip_address}:3128\"/g' comandos.sh",
+      "sed -i 's/\"IP_PUBLIC_MAQUINE_VIRTUAL/32\"/\"${azurerm_public_ip.vm-pip.ip_address}/32\"/g' comandos.sh",
       "sudo chmod +x /home/azureuser/comandos.sh",
       "bash /home/azureuser/comandos.sh"
       
 
       
-    ] : null
+    ] : "ls"
     connection { 
-      type        = count.index < 2 ? "ssh" : null
-      host        = count.index < 2 ? "${azurerm_public_ip.vm-pip.ip_address}" : null
-      user        = count.index < 2 ? var.vm_cred.user : null
-      private_key = count.index < 2 ? file("./ssh/id_rsa") : null
+      type        = "ssh"
+      host        =  "${azurerm_public_ip.vm-pip.ip_address}" 
+      user        =  var.vm_cred.user 
+      private_key =  file("./ssh/id_rsa") 
     }
   }
+
 }
 
 
